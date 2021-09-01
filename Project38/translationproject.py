@@ -38,7 +38,7 @@ def translate_orf(seq):
     prot_seq =[]
     for x in split_codons(seq):
         prot_seq.append(translate_codon(x))
-    return prot_seq
+    return "".join(prot_seq)
 
 
 
