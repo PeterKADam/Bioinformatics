@@ -7,6 +7,9 @@
 # only your function definitions...
 
 # You get this one for free :-)
+from os import read
+
+
 def pretty_print(d):
     print('      ', end='')
     for j in sorted(d):
@@ -32,8 +35,13 @@ def read_data(filename):
         i = data[line].split()
         seq_dict[i[0]] = i[1]
     return seq_dict    
-        
 
+def mean_length(seqdict):
+    
+    return len(''.join(seqdict.values()))/len(seqdict.values())
+
+       
+#print(mean_length(read_data("sequencing_reads.txt")))
 
 
 
