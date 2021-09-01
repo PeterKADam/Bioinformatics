@@ -24,13 +24,15 @@ def pretty_print(d):
         print()
 
 def read_data(filename):
-    input_file = open(filename)
     seq_dict = {}
-    for line in input_file:
-        print(line)
-
-    return
-read_data(seque)
+    with open(filename) as f:
+        data = f.read().splitlines()
+    
+    for line in range(len(data)):
+        i = data[line].split()
+        seq_dict[i[0]] = i[1]
+    return seq_dict    
+        
 
 
 
