@@ -40,7 +40,17 @@ def mean_length(seqdict):
     
     return len(''.join(seqdict.values()))/len(seqdict.values())
 
-       
+def get_overlap(left, right):
+    overlap = ""
+    print(min(len(left),len(right)))
+    for i in range(min(len(left),len(right))):
+        for y in range(min(len(left),len(right))):
+            
+                
+            return overlap
+s1 = "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC"
+s2 = "GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC"
+print(get_overlap(s1, s2))
 #print(mean_length(read_data("sequencing_reads.txt")))
 
 
