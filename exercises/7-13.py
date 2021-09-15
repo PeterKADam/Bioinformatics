@@ -1,8 +1,5 @@
 x = 1
-y = 0
+y = 1
 
-if x==0 or y==0 :
-    if not x==0 and y==0:
-        print("ok")
-    else:
-        print("not ok "+"x="+str(x)+" y="+str(y))
+if (x or y) and not (x and y) :print("ok")
+else: print("not ok "+"x="+str(x)+" y="+str(y))
