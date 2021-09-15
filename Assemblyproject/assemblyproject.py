@@ -48,10 +48,16 @@ def get_overlap(left, right):
     return ""
 
 def get_all_overlaps(readdata):
+    overlapdict={}
     
-    
-
-    return dictdict
+    for each in readdata.keys():
+        overlapdict[each]={}
+        #print("each:"+ each)
+        for every in readdata.keys():
+            if not every==each:
+                #print("every:" + every)
+                overlapdict[each]={every: len(get_overlap(overlapdict[each],overlapdict[every]))}
+    return overlapdict
 
 
 
@@ -65,12 +71,12 @@ def get_all_overlaps(readdata):
 #############################################################
 
 # any other code ...
-
+print(get_all_overlaps(read_data("sequencing_reads.txt")))
 #s1 = "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC"
 #s2 = "GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC"
 #print(get_overlap(s1, s2))
 #print(get_overlap(s2,s1))
 #print(mean_length(read_data("sequencing_reads.txt")))
-
+#print(read_data("sequencing_reads.txt"))
 
 
