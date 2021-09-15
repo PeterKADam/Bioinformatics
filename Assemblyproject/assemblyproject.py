@@ -37,25 +37,21 @@ def read_data(filename):
     return seq_dict    
 
 def mean_length(seqdict):
-    
     return len(''.join(seqdict.values()))/len(seqdict.values())
 
 def get_overlap(left, right):
+    for i in range(len(right)):
+        if right[:len(right)-i-1] in left and len(right[:len(right)-i-1])>2:
+            return right[:len(right)-i-1]
+    if right[0]==left[len(left)-1]:
+            return right[0]
+    return ""
+
+def get_all_overlaps(readdata):
     
-    for each in right:
-        
+    
 
-
-
-
-
-    return 
-
-
-s1 = "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC"
-s2 = "GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC"
-print(get_overlap(s1, s2))
-#print(mean_length(read_data("sequencing_reads.txt")))
+    return dictdict
 
 
 
@@ -70,7 +66,11 @@ print(get_overlap(s1, s2))
 
 # any other code ...
 
-
+#s1 = "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC"
+#s2 = "GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC"
+#print(get_overlap(s1, s2))
+#print(get_overlap(s2,s1))
+#print(mean_length(read_data("sequencing_reads.txt")))
 
 
 
