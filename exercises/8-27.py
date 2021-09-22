@@ -1,7 +1,6 @@
 def is_bp(x,y):
-    i=["AT","GC"]
-    return x+y in i or y+x in i
-print(is_bp("C","G"))
+    return any(e in [x+y,y+x] for e in ["AT","GC"])
+print(is_bp("G","C"))
     #for each in [x+y,y+x]:
     #    if each in ["AT","GC"]: return True
     #return False
