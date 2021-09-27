@@ -123,7 +123,6 @@ def get_left_overlaps(*args):  # overlaps:dict = get_all_overlaps(), read: str =
 def find_first_read(overlaps: dict = get_all_overlaps()):
 
     sumdict = {}
-
     for each in overlaps.keys():
         sumdict[each] = sum(get_left_overlaps(str(each)))
     return min(sumdict, key=sumdict.get)
