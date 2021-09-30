@@ -39,6 +39,7 @@ def read_data(filename: str = RPATH):
     with open(filename) as f:
         data = f.read().splitlines()
 
+    # for loop could prolly get refactored into list comprehension.
     for line in range(len(data)):
         i = data[line].split()
         seq_dict[i[0]] = i[1]
@@ -76,19 +77,21 @@ def get_overlap(left: str, right: str):
         ):
             return left[current:]
 
+    # maybe refactor to "" == left[-1] ???""
+    # also fix stoopid if structure, just return A or B
     if right[0] == left[len(left) - 1]:
         return right[0]
-
     return ""
 
 
 def get_all_overlaps(readdata: dict = read_data()):
 
+    # make whole function a oneline list(dict) comprehension? for-loops makes brain hurt
+
     overlapdict = {}
 
     for each in readdata.keys():
         overlapdict[each] = {}
-
         for every in readdata.keys():
             if not every == each:
                 overlapdict[each][every] = len(
@@ -121,7 +124,7 @@ def get_left_overlaps(*args):  # overlaps:dict = get_all_overlaps(), read: str =
 
 
 def find_first_read(overlaps: dict = get_all_overlaps()):
-
+    # do i smell a list comprehension refactor?
     sumdict = {}
     for each in overlaps.keys():
         sumdict[each] = sum(get_left_overlaps(str(each)))
@@ -145,18 +148,19 @@ def find_order_of_reads(
 
 
 def reconstruct_sequence(order: list, reads: dict, overlaps: dict):
-
+    # maybe list comprehension? nested list idx have horrible readability
     rseq = reads[order[0]]
 
     for i in range(1, len(order)):
+
         tempread = reads[order[i]]
-        # print(overlaps[order[i-1]][order[i]])
-        # print(tempread[overlaps[order[i-1]][order[i]]:])
+
         rseq = rseq + tempread[overlaps[order[i - 1]][order[i]] :]
     return rseq
 
 
 def assemble_genome(path: str = RPATH):
+    # why is this function a thing?, nested hardcoded functions gallore :(
     RPATH = path
     return reconstruct_sequence(find_order_of_reads(), read_data(), get_all_overlaps())
 
