@@ -74,24 +74,15 @@ codon_map = {
 
 
 def translate_codon(codon):
-    if codon in codon_map:
-        return codon_map[codon]
-    else:
-        return "?"
+    return codon_map[codon] if codon in codon_map else "?"
 
 
 def split_codons(orf):
-    codons = []
-    for i in range(0, len(orf), 3):
-        codons.append(orf[i : i + 3])
-    return codons
+    return [orf[x : x + 3] for x in range(0, len(orf), 3)]
 
 
 def translate_orf(seq):
-    prot_seq = []
-    for x in split_codons(seq):
-        prot_seq.append(translate_codon(x))
-    return "".join(prot_seq)
+    return "".join([translate_codon(x) for x in split_codons(seq)])
 
 
 #############################################################
@@ -100,5 +91,6 @@ def translate_orf(seq):
 # your script in this way, you are less likely to make mistakes.
 #############################################################
 
+# print(split_codons("AAATTTCCCGGG"))
 # any other code ...
 
