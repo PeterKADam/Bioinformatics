@@ -9,22 +9,21 @@ from io import StringIO
 import traceback
 import re
 
-GRADE_MODE = os.getenv("GRADE_MODE")
+GRADE_MODE = os.getenv('GRADE_MODE')
 
-PROJECT_NAME = os.path.splitext(os.path.basename(__file__))[0].replace("test_", "")
-
+PROJECT_NAME = os.path.splitext(os.path.basename(__file__))[0].replace('test_', '')
 
 class NullDevice:
+
     def write(self, s):
         pass
-
 
 # Redirect all stdout from the imported module to a null device to not confuse
 # the student too much...
 try:
     with redirect_stdout(NullDevice()):
         # import progexam as project
-        project = __import__(PROJECT_NAME)
+       project = __import__(PROJECT_NAME)
 except:
     print("YOUR CODE CANNOT BE RUN:\n\nHere is the error:\n")
     traceback.print_exc(file=sys.stdout)
@@ -48,7 +47,7 @@ However, it should return:
 
 def suiteFactory(*testcases):
 
-    ln = lambda f: getattr(tc, f).__code__.co_firstlineno
+    ln    = lambda f: getattr(tc, f).__code__.co_firstlineno
     lncmp = lambda a, b: ln(a) - ln(b)
 
     test_suite = unittest.TestSuite()
@@ -60,13 +59,9 @@ def suiteFactory(*testcases):
 
 def caseFactory():
     from inspect import findsource
-
+    
     g = globals().copy()
-    cases = [
-        g[obj]
-        for obj in g
-        if obj.startswith("Test") and issubclass(g[obj], unittest.TestCase)
-    ]
+    cases = [g[obj] for obj in g if obj.startswith("Test") and issubclass(g[obj], unittest.TestCase)]
     ordered_cases = sorted(cases, key=lambda f: findsource(f)[1])
     return ordered_cases
 
@@ -76,30 +71,29 @@ def function_not_defined(module, func_name):
 
 
 def indent(text, indent=4):
-    return "\n".join([(indent * " ") + line for line in text.splitlines()])
+    return '\n'.join([(indent * ' ') + line for line in text.splitlines()])
 
 
 def skip_initial_nonlocal(tb):
     if tb is None:
         return tb
-    if tb.tb_frame.f_code.co_filename.startswith("test_"):
+    if tb.tb_frame.f_code.co_filename.startswith('test_'):
         return skip_initial_nonlocal(tb.tb_next)
-    if "unittest" in tb.tb_frame.f_code.co_filename:
+    if 'unittest' in tb.tb_frame.f_code.co_filename:
         return skip_initial_nonlocal(tb.tb_next)
 
     return tb
-
 
 ######################################################
 
 from copy import deepcopy
 
-
 class NonStandardElementError(Exception):
-    def __init___(self, dErrArguments):
-        def __init__(self, *args, **kwargs):
-            Exception.__init__(self, *args, **kwargs)
 
+    def __init___(self, dErrArguments):
+        def __init__(self,*args,**kwargs):
+            Exception.__init__(self,*args,**kwargs)
+  
 
 def round_datastruct_recursively(d):
     if isinstance(d, dict):
@@ -117,7 +111,6 @@ def round_datastruct_recursively(d):
     elif not (isinstance(d, float) or isinstance(d, int) or isinstance(d, str)):
         raise NonStandardElementError(d)
 
-
 def compare_datastruct_nice(exp, act):
     """
     Compares data structures in a way that rounds float values in them
@@ -131,12 +124,10 @@ def compare_datastruct_nice(exp, act):
         return False
     return exp_rounded == act_rounded
 
-
 ######################################################
 
-
 class AnvProgTestResult(TestResult):
-    separator = "=" * 70
+    separator = '=' * 70
 
     def __init__(self, stream, descriptions, verbosity):
         super().__init__(stream, descriptions, verbosity)
@@ -148,8 +139,8 @@ class AnvProgTestResult(TestResult):
         self.skipped_functions = list()
 
         if GRADE_MODE:
-            report_file = os.path.splitext(os.path.basename(__file__))[0] + ".csv"
-            self.file = open(report_file, "w")
+            report_file = os.path.splitext(os.path.basename(__file__))[0] + '.csv'
+            self.file = open(report_file, 'w')
 
         # match = re.search(r'assignment_(au\d+)_attempt', os.path.basename(os.getcwd()))
         # if match:
@@ -157,29 +148,21 @@ class AnvProgTestResult(TestResult):
         # else:
         #     self.student_id = 'NA'
 
-        blackboard_match = re.search(
-            r"assignment_(au\d+)_attempt", os.path.basename(os.getcwd())
-        )
-        digitalexam_match = re.search(
-            r"([^_]+)_\d+_\d+_.+" + PROJECT_NAME, os.path.basename(os.getcwd())
-        )
+        blackboard_match = re.search(r'assignment_(au\d+)_attempt', os.path.basename(os.getcwd()))
+        digitalexam_match = re.search(r'([^_]+)_\d+_\d+_.+' + PROJECT_NAME, os.path.basename(os.getcwd()))
 
         if blackboard_match:
             self.student_id = blackboard_match.group(1)
         elif digitalexam_match:
-            self.student_id = digitalexam_match.group(1)
+            self.student_id = digitalexam_match.group(1)            
         else:
-            self.student_id = "NA"
+            self.student_id = 'NA'
 
     def addSuccess(self, test):
         super().addSuccess(test)
 
         if GRADE_MODE:
-            self.file.write(
-                "{},{},{},{}\n".format(
-                    self.student_id, test.__class__.__name__, test._testMethodName, "ok"
-                )
-            )
+            self.file.write('{},{},{},{}\n'.format(self.student_id, test.__class__.__name__, test._testMethodName, 'ok'))
             self.file.flush()
 
     def addError(self, test, err):
@@ -188,48 +171,35 @@ class AnvProgTestResult(TestResult):
         new_tb = skip_initial_nonlocal(tb)
 
         if GRADE_MODE:
-            self.file.write(
-                "{},{},{},{}\n".format(
-                    self.student_id,
-                    test.__class__.__name__,
-                    test._testMethodName,
-                    "error",
-                )
-            )
+            self.file.write('{},{},{},{}\n'.format(self.student_id, test.__class__.__name__, test._testMethodName, 'error'))
             self.file.flush()
 
         # self.stream.writeln(
         #     'ERROR DURING TEST CASE: {}'.format(test._testMethodName))
         self.stream.writeln(
-            "YOUR CODE FAILED WHILE RUNNING A TEST ({})".format(test._testMethodName)
-        )
+            'YOUR CODE FAILED WHILE RUNNING A TEST ({})'.format(test._testMethodName))
         self.stream.writeln()
-        self.stream.writeln(
-            "It means that your function could not be run the way specified in the assignment."
-        )
+        self.stream.writeln('It means that your function could not be run the way specified in the assignment.')
         self.stream.writeln()
-        self.stream.writeln("MESSAGE:")
-        self.stream.writeln(indent("{}".format(errobj)))
+        self.stream.writeln('MESSAGE:')
+        self.stream.writeln(indent('{}'.format(errobj)))
         self.stream.writeln()
-        self.stream.writeln("DETAILED:")
+        self.stream.writeln('DETAILED:')
         self.stream.writeln(
-            indent("Below is a detailed description of where the error occurred")
-        )
-        self.stream.writeln(
-            indent("and what code was run before the error occurred. It is often")
-        )
-        self.stream.writeln(
-            indent("most useful to read this description from the bottom and up.")
-        )
+            indent('Below is a detailed description of where the error occurred'))
+        self.stream.writeln(indent(
+            'and what code was run before the error occurred. It is often'))
+        self.stream.writeln(indent(
+            'most useful to read this description from the bottom and up.'))
         self.stream.writeln()
 
         # self.stream.writeln(
         #     indent('\n'.join(traceback.format_tb(new_tb))))
-        self.stream.writeln(indent("...Skipped frames not relevant to your code..."))
+        self.stream.writeln(
+            indent("...Skipped frames not relevant to your code..."))
         self.stream.writeln()
         self.stream.writeln(
-            indent("".join(traceback.format_exception(errcls, errobj, new_tb)))
-        )
+            indent(''.join(traceback.format_exception(errcls, errobj, new_tb))))
 
         self.stream.writeln()
         self.stream.writeln(self.separator)
@@ -240,27 +210,21 @@ class AnvProgTestResult(TestResult):
         _, errobj, tb = err
 
         if GRADE_MODE:
-            self.file.write(
-                "{},{},{},{}\n".format(
-                    self.student_id,
-                    test.__class__.__name__,
-                    test._testMethodName,
-                    "failed",
-                )
-            )
+            self.file.write('{},{},{},{}\n'.format(self.student_id, test.__class__.__name__, test._testMethodName, 'failed'))
             self.file.flush()
 
-        self.stream.writeln("FAILED TEST CASE: {}".format(test._testMethodName))
+        self.stream.writeln(
+            'FAILED TEST CASE: {}'.format(test._testMethodName))
         self.stream.writeln()
-        self.stream.writeln("MESSAGE:")
+        self.stream.writeln('MESSAGE:')
         self.stream.writeln(indent(str(errobj)))
         self.stream.writeln()
 
         if isinstance(errobj, AssertEqualAssertionError):
-            self.stream.writeln("EXPECTED:")
+            self.stream.writeln('EXPECTED:')
             self.stream.writeln(indent(repr(errobj.expected)))
             self.stream.writeln()
-            self.stream.writeln("ACTUAL:")
+            self.stream.writeln('ACTUAL:')
             self.stream.writeln(indent(repr(errobj.actual)))
             self.stream.writeln()
 
@@ -292,14 +256,7 @@ class AnvProgTestResult(TestResult):
             self.skipped_functions.append(reason)
 
         if GRADE_MODE:
-            self.file.write(
-                "{},{},{},{}\n".format(
-                    self.student_id,
-                    test.__class__.__name__,
-                    test._testMethodName,
-                    "skipped",
-                )
-            )
+            self.file.write('{},{},{},{}\n'.format(self.student_id, test.__class__.__name__, test._testMethodName, 'skipped'))
             self.file.flush()
 
         # self.stream.writeln(
@@ -320,24 +277,26 @@ class AnvProgTestResult(TestResult):
 
         if self.skipped_functions:
             self.stream.writeln()
-            self.stream.writeln("*" * 57)
-            self.stream.writeln("ATTENTION! The following functions are not defined:")
-            self.stream.writeln("")
+            self.stream.writeln('*'*57)
             self.stream.writeln(
-                "\n".join("\t{}".format(x) for x in self.skipped_functions)
-            )
+                'ATTENTION! The following functions are not defined:')
+            self.stream.writeln('')
+            self.stream.writeln(
+                '\n'.join('\t{}'.format(x) for x in self.skipped_functions))
             self.stream.writeln()
             self.stream.writeln(
-                "These functions are either not correctly named (spelled)"
-            )
-            self.stream.writeln("or not defined at all. They will be marked as FAILED.")
-            self.stream.writeln("Check your spelling if this is not what you intend.")
-            self.stream.writeln("*" * 57)
+                'These functions are either not correctly named (spelled)')
+            self.stream.writeln(
+                'or not defined at all. They will be marked as FAILED.')
+            self.stream.writeln(
+                'Check your spelling if this is not what you intend.')
+            self.stream.writeln('*'*57)
             self.stream.writeln()
             self.stream.flush()
 
 
 class AnvProgTestRunner(TextTestRunner):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, resultclass=AnvProgTestResult, **kwargs)
 
@@ -355,6 +314,7 @@ class AssertEqualAssertionError(AssertionError):
 
 
 class AssertEqualNiceAssertionError(AssertionError):
+
     def __init__(self, actual, expected, func, args, kwargs):
         self.actual = actual
         self.expected = expected
@@ -363,64 +323,56 @@ class AssertEqualNiceAssertionError(AssertionError):
         self.kwargs = kwargs
 
     def __str__(self):
-        args_str = ", ".join(map(repr, self.args))
+        args_str = ', '.join(map(repr, self.args))
         if self.kwargs:
-            kwargs_str = ", ".join(
-                "{}={!r}".format(k, w) for k, w in self.kwargs.items()
-            )
-            args_str += ", " + kwargs_str
+            kwargs_str = ', '.join('{}={!r}'.format(k, w)
+                                   for k, w in self.kwargs.items())
+            args_str += ', ' + kwargs_str
         return assertion_msg.format(
             func=self.func.__name__,
             args=args_str,
             actual=repr(self.actual),
-            expected=repr(self.expected),
-        )
+            expected=repr(self.expected))
 
 
 class AnvProgTestCase(unittest.TestCase):
+
     def assertFunctionDefined(self, module, name):
-        self.assertTrue(hasattr(module, name), msg="'{}' is not defined".format(name))
-        self.assertTrue(
-            callable(getattr(module, name)), msg="'{}' is not a function".format(name)
-        )
+        self.assertTrue(hasattr(module, name),
+                        msg="'{}' is not defined".format(name))
+        self.assertTrue(callable(getattr(module, name)),
+                        msg="'{}' is not a function".format(name))
 
     def assertFunctionPosParams(self, func, expected):
         signature = str(inspect.signature(func))
-        self.assertTrue(
-            expected == signature,
-            msg="Wrong names of function parameters\n\n"
-            "Correct function definition:\n\n"
-            "{}\n\n"
-            "Got:\n\n"
-            "{}".format(func.__name__ + expected, func.__name__ + signature),
-        )
+        self.assertTrue(expected == signature,
+                        msg="Wrong names of function parameters\n\n"
+                            "Correct function definition:\n\n"
+                            "{}\n\n"
+                            "Got:\n\n"
+                            "{}".format(func.__name__ + expected, func.__name__ + signature))
 
     def assertEqualNice(self, expected, func, *args, **kwargs):
         actual = func(*args, **kwargs)
 
-        if (
-            isinstance(expected, dict)
-            or isinstance(actual, dict)
-            or isinstance(expected, list)
-            or isinstance(actual, list)
-        ):
+        if isinstance(expected, dict) or isinstance(actual, dict) or \
+            isinstance(expected, list) or isinstance(actual, list):
             if not compare_datastruct_nice(expected, actual):
                 raise AssertEqualNiceAssertionError(
-                    actual, expected, func, args, kwargs
-                )
+                    actual, expected, func, args, kwargs)
 
         elif isinstance(expected, float) or isinstance(actual, float):
             if abs(expected - actual) > 1e-4:
                 raise AssertEqualNiceAssertionError(
-                    actual, expected, func, args, kwargs
-                )
+                    actual, expected, func, args, kwargs)
         elif actual != expected:
-            raise AssertEqualNiceAssertionError(actual, expected, func, args, kwargs)
+            raise AssertEqualNiceAssertionError(
+                actual, expected, func, args, kwargs)
 
     def assertEqual(self, first, second, msg=None):
         # Suppress diffs for strings.
         if msg is None and isinstance(first, str) and isinstance(second, str):
-            msg = "Got '{}' but expected '{}'".format(first, second)
+            msg = 'Got \'{}\' but expected \'{}\''.format(first, second)
 
         try:
             super().assertEqual(first, second, msg=msg)
@@ -434,7 +386,7 @@ class AnvProgTestCase(unittest.TestCase):
         # Override super().assertTrue() to suppress the default 'X is not true'
         # output when msg is not None.
         if msg is None:
-            msg = "{} is not true".format(expr)
+            msg = '{} is not true'.format(expr)
         if not expr:
             raise AssertionError(msg)
 
@@ -442,10 +394,9 @@ class AnvProgTestCase(unittest.TestCase):
         # Override super().assertFalse() to suppress the default 'X is not
         # false' output when msg is not None.
         if msg is None:
-            msg = "{} is not false".format(expr)
+            msg = '{} is not false'.format(expr)
         if expr:
             raise AssertionError(msg)
-
 
 ###############################################################################
 #                                                                             #
@@ -453,33 +404,29 @@ class AnvProgTestCase(unittest.TestCase):
 #                                                                             #
 ###############################################################################
 
-"""
+'''
       TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGCTGGTACGTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGTCGTGAACACATCAGT
-Read4 TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCG
+Read4 TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGC
                          Read2 CTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGG
                                                          Read5 CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCT
                                                                  Read1 GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC
                                                                                           Read6 TGACAGTAGATCTCGTCCAGACCCCTAGCTGGTACGTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGT
                                                                                                                              Read3 GTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGTCGTGAACACATCAGT
-"""
+'''
 
-test_reads = {
-    "Read1": "GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC",
-    "Read6": "TGACAGTAGATCTCGTCCAGACCCCTAGCTGGTACGTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGT",
-    "Read2": "CTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGG",
-    "Read5": "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC",
-    "Read4": "TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCG",
-    "Read3": "GTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGTCGTGAACACATCAGT",
-}
+test_reads = {'Read1': 'GGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGC', 
+              'Read6': 'TGACAGTAGATCTCGTCCAGACCCCTAGCTGGTACGTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGT', 
+              'Read2': 'CTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGG', 
+              'Read5': 'CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC',
+              'Read4': 'TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCG',
+              'Read3': 'GTCTTCAGTAGAAAATTGTTTTTTTCTTCCAAGAGGTCGGAGTCGTGAACACATCAGT'}
 
-test_overlaps = {
-    "Read1": {"Read6": 29, "Read5": 1, "Read4": 0, "Read3": 0, "Read2": 1},
-    "Read3": {"Read1": 0, "Read5": 0, "Read6": 1, "Read4": 1, "Read2": 0},
-    "Read2": {"Read1": 13, "Read5": 21, "Read6": 0, "Read3": 1, "Read4": 0},
-    "Read5": {"Read1": 39, "Read4": 0, "Read6": 14, "Read3": 0, "Read2": 1},
-    "Read6": {"Read1": 0, "Read5": 0, "Read4": 1, "Read3": 43, "Read2": 0},
-    "Read4": {"Read1": 1, "Read5": 2, "Read6": 0, "Read3": 1, "Read2": 17},
-}
+test_overlaps =  {'Read1': {'Read6': 29, 'Read5': 1, 'Read4': 0, 'Read3': 0, 'Read2': 1}, 
+                  'Read3': {'Read1': 0, 'Read5': 0, 'Read6': 1, 'Read4': 1, 'Read2': 0}, 
+                  'Read2': {'Read1': 13, 'Read5': 21, 'Read6': 0, 'Read3': 1, 'Read4': 0}, 
+                  'Read5': {'Read1': 39, 'Read4': 0, 'Read6': 14, 'Read3': 0, 'Read2': 1}, 
+                  'Read6': {'Read1': 0, 'Read5': 0, 'Read4': 1, 'Read3': 43, 'Read2': 0}, 
+                  'Read4': {'Read1': 1, 'Read5': 2, 'Read6': 0, 'Read3': 1, 'Read2': 17}}
 
 test_print = """       Read1 Read2 Read3 Read4 Read5 Read6
  Read1     -     1     0     0     1    29
@@ -490,77 +437,87 @@ test_print = """       Read1 Read2 Read3 Read4 Read5 Read6
  Read6     0     0    43     1     0     -
 """
 
-test_first_read = "Read4"
+test_first_read = 'Read4'
 
-test_read_order = ["Read4", "Read2", "Read5", "Read1", "Read6", "Read3"]
-
-
-test_genome = (
-    "TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCC"
-    "CACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGCTGGTACGTCTTCAGTAGAAAATTGTTT"
-    "TTTTCTTCCAAGAGGTCGGAGTCGTGAACACATCAGT"
-)
+test_read_order = ['Read4', 'Read2', 'Read5', 'Read1', 'Read6', 'Read3']
 
 
-@unittest.skipIf(function_not_defined(project, "read_data"), "read_data")
+test_genome = 'TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCC' \
+              'CACGGGGTACCCATAACTTGACAGTAGATCTCGTCCAGACCCCTAGCTGGTACGTCTTCAGTAGAAAATTGTTT' \
+              'TTTTCTTCCAAGAGGTCGGAGTCGTGAACACATCAGT'
+
+@unittest.skipIf(function_not_defined(project, 'read_data'), 'read_data')
 class TestExercise1(AnvProgTestCase):
+
     def test_read_data_returns_dictionary(self):
-        reads = project.read_data("sequencing_reads.txt")
+        reads = project.read_data('sequencing_reads.txt')
         self.assertTrue(isinstance(reads, dict))
 
     def test_read_data_returns_dictionary_correctly(self):
-        reads = project.read_data("sequencing_reads.txt")
-        self.assertEqualNice(test_reads, project.read_data, "sequencing_reads.txt")
+        reads = project.read_data('sequencing_reads.txt')
+        self.assertEqualNice(test_reads, project.read_data, 'sequencing_reads.txt')
 
-
-@unittest.skipIf(function_not_defined(project, "mean_length"), "mean_length")
+@unittest.skipIf(function_not_defined(project, 'mean_length'), 'mean_length')
 class TestExercise2(AnvProgTestCase):
+    
     def test_mean_length_returns_mean_length_of_sequences1(self):
         reads = {
-            "Read1": "ACGT",
-            "Read2": "ACGTACGT",
+            'Read1': 'ACGT',
+            'Read2': 'ACGTACGT',
         }
         self.assertEqualNice(6, project.mean_length, reads)
 
     def test_mean_length_returns_mean_length_of_sequences2(self):
         reads = {
-            "Read1": "ACGTTGCA",
-            "Read2": "ACGTACGT",
+            'Read1': 'ACGTTGCA',
+            'Read2': 'ACGTACGT',
         }
         self.assertEqualNice(8, project.mean_length, reads)
 
     def test_mean_length_returns_mean_length_of_sequences3(self):
         reads = {
-            "Read1": "atttaatgtgata",
-            "Read2": "agtgtatgatagtacgcgcgc",
+            'Read1': 'atttaatgtgata',
+            'Read2': 'agtgtatgatagtacgcgcgc',
         }
         self.assertEqualNice(17, project.mean_length, reads)
 
 
-@unittest.skipIf(function_not_defined(project, "get_overlap"), "get_overlap")
+@unittest.skipIf(function_not_defined(project, 'get_overlap'), 'get_overlap')
 class TestExercise3(AnvProgTestCase):
+
     def test_get_overlap_1(self):
         self.assertEqualNice("TTTTT", project.get_overlap, "AAAAATTTTT", "TTTTTTTTTT")
 
     def test_get_overlap_2(self):
         self.assertEqualNice("", project.get_overlap, "TTTTTTTTTT", "AAAAATTTTT")
 
+    def test_get_overlap_3(self):
+        self.assertEqualNice("CTTTACCCGGAAGAGC", project.get_overlap, "TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGC", "CTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGG")
 
-@unittest.skipIf(function_not_defined(project, "get_all_overlaps"), "get_all_overlaps")
+    def test_get_overlap_4(self):
+        self.assertEqualNice("CGATTCCAGGCTCCCCACGGG", project.get_overlap, "CTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGG", "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCT")
+
+    def test_get_overlap_5(self):
+        self.assertEqualNice("", project.get_overlap, "CTTTACCCGGAAGAGCGGGACGCTGCCCTGCGCGATTCCAGGCTCCCCACGGG", "TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGC")
+
+    def test_get_overlap_6(self):
+        self.assertEqualNice("CG", project.get_overlap, "TGCGAGGGAAGTGAAGTATTTGACCCTTTACCCGGAAGAGCG", "CGATTCCAGGCTCCCCACGGGGTACCCATAACTTGACAGTAGATCTC")
+
+@unittest.skipIf(function_not_defined(project, 'get_all_overlaps'), 'get_all_overlaps')
 class TestExercise4(AnvProgTestCase):
+
     def test_get_all_overlaps_1(self):
-        self.assertEqualNice(
-            {"Read1": {"Read2": 5}, "Read2": {"Read1": 1}},
-            project.get_all_overlaps,
-            {"Read1": "AAAAATTTTT", "Read2": "TTTTTTTTTA"},
-        )
+        self.assertEqualNice({'Read1': {'Read2': 5}, 'Read2': {'Read1': 1}},
+                             project.get_all_overlaps, 
+                             {'Read1': "AAAAATTTTT", 'Read2': "TTTTTTTTTA"})
 
     def test_get_all_overlaps_2(self):
         self.assertEqualNice(test_overlaps, project.get_all_overlaps, test_reads)
 
 
-@unittest.skipIf(function_not_defined(project, "pretty_print"), "pretty_print")
+@unittest.skipIf(function_not_defined(project, 'pretty_print'), 'pretty_print')
 class TestExercise5(AnvProgTestCase):
+
     def test_pretty_print_1(self):
         strio = StringIO()
         with redirect_stdout(strio):
@@ -568,105 +525,73 @@ class TestExercise5(AnvProgTestCase):
         self.assertEqual(strio.getvalue(), test_print)
 
 
-@unittest.skipIf(
-    function_not_defined(project, "get_left_overlaps"), "get_left_overlaps"
-)
+@unittest.skipIf(function_not_defined(project, 'get_left_overlaps'), 'get_left_overlaps')
 class TestGetLeftOverlaps(AnvProgTestCase):
+
     def test_get_left_overlaps_1(self):
-        self.assertEqualNice(
-            [0, 0, 0, 1, 1], project.get_left_overlaps, test_overlaps, test_first_read
-        )
+        self.assertEqualNice([0, 0, 0, 1, 1], project.get_left_overlaps, test_overlaps, test_first_read)
 
     def test_get_left_overlaps_2(self):
-        self.assertEqualNice(
-            [0, 0, 1, 13, 39], project.get_left_overlaps, test_overlaps, "Read1"
-        )
+        self.assertEqualNice([0, 0, 1, 13, 39] , project.get_left_overlaps, test_overlaps, 'Read1')
 
 
-@unittest.skipIf(function_not_defined(project, "find_first_read"), "find_first_read")
+@unittest.skipIf(function_not_defined(project, 'find_first_read'), 'find_first_read')
 class TestExercise6(AnvProgTestCase):
+
     def test_find_first_read_1(self):
         self.assertEqualNice(test_first_read, project.find_first_read, test_overlaps)
 
 
-@unittest.skipIf(
-    function_not_defined(project, "find_key_for_largest_value"),
-    "find_key_for_largest_value",
-)
+@unittest.skipIf(function_not_defined(project, 'find_key_for_largest_value'), 'find_key_for_largest_value')
 class TestExercise7(AnvProgTestCase):
+    
     def test_find_key_for_largest_value_1(self):
-        self.assertEqualNice(
-            "B", project.find_key_for_largest_value, {"A": 3, "B": 5, "C": 2}
-        )
+        self.assertEqualNice('B', project.find_key_for_largest_value, {'A': 3, 'B': 5, 'C': 2})
 
     def test_find_key_for_largest_value_2(self):
-        self.assertEqualNice(
-            "Read1", project.find_key_for_largest_value, test_overlaps["Read5"]
-        )
+        self.assertEqualNice('Read1', project.find_key_for_largest_value, test_overlaps['Read5'])
 
 
-@unittest.skipIf(
-    function_not_defined(project, "find_order_of_reads"), "find_order_of_reads"
-)
+@unittest.skipIf(function_not_defined(project, 'find_order_of_reads'), 'find_order_of_reads')
 class TestFindOrderOfReads(AnvProgTestCase):
+    
     def test_find_order_of_reads_1(self):
-        self.assertEqualNice(
-            ["A", "B", "C"],
-            project.find_order_of_reads,
-            "A",
-            {"C": {"A": 0, "C": 2}, "A": {"B": 15, "C": 1}, "B": {"A": 0, "C": 11}},
-        )
+        self.assertEqualNice(['A', 'B', 'C'], 
+            project.find_order_of_reads, 'A', {'C': {'A': 0, 'B': 2}, 'A': {'B': 15, 'C': 1}, 'B': {'A': 0, 'C': 11}})
 
     def test_find_order_of_reads_2(self):
-        self.assertEqualNice(
-            ["Read4", "Read2", "Read5", "Read1", "Read6", "Read3"],
-            project.find_order_of_reads,
-            "Read4",
-            test_overlaps,
-        )
+        self.assertEqualNice(['Read4', 'Read2', 'Read5', 'Read1', 'Read6', 'Read3'], 
+            project.find_order_of_reads, 'Read4', test_overlaps)
 
 
-@unittest.skipIf(
-    function_not_defined(project, "reconstruct_sequence"), "reconstruct_sequence"
-)
+@unittest.skipIf(function_not_defined(project, 'reconstruct_sequence'), 'reconstruct_sequence')
 class TestExercise8(AnvProgTestCase):
+    
     def test_reconstruct_sequence_1(self):
-        self.assertEqualNice(
-            "AAAAATTTTTTTTTA",
-            project.reconstruct_sequence,
-            ["Read1", "Read2"],
-            {"Read1": "AAAAATTTTT", "Read2": "TTTTTTTTTA"},
-            {"Read1": {"Read2": 5}, "Read2": {"Read1": 1}},
-        )
+        self.assertEqualNice('AAAAATTTTTTTTTA', project.reconstruct_sequence, ['Read1', 'Read2'], 
+            {'Read1': "AAAAATTTTT", 'Read2': "TTTTTTTTTA"}, {'Read1': {'Read2': 5}, 'Read2': {'Read1': 1}})
 
     def test_reconstruct_sequence_2(self):
-        self.assertEqualNice(
-            test_genome,
-            project.reconstruct_sequence,
-            test_read_order,
-            test_reads,
-            test_overlaps,
-        )
+        self.assertEqualNice(test_genome, project.reconstruct_sequence, test_read_order, test_reads, test_overlaps)
 
 
-@unittest.skipIf(function_not_defined(project, "assemble_genome"), "assemble_genome")
+@unittest.skipIf(function_not_defined(project, 'assemble_genome'), 'assemble_genome')
 class TestExercise9(AnvProgTestCase):
+
     def test_assemble_genome_1(self):
-        self.assertEqualNice(
-            test_genome, project.assemble_genome, "sequencing_reads.txt"
-        )
+        self.assertEqualNice(test_genome, project.assemble_genome, 'sequencing_reads.txt')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # if GRADE_MODE:
     #    unittest.main(failfast=False, testRunner=AnvProgTestRunner)
     # else:
     #    unittest.main(failfast=True, testRunner=AnvProgTestRunner)
     cases = suiteFactory(*caseFactory())
     if GRADE_MODE:
-        failfast = False
+       failfast=False
     else:
-        failfast = True
+       failfast=True
     runner = AnvProgTestRunner(failfast=failfast)
     test_result = runner.run(cases)
     sys.exit(int(not test_result.wasSuccessful()))
