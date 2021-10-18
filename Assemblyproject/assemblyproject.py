@@ -39,7 +39,8 @@ def read_data(filename: str = RPATH):
     with open(filename) as f:
         data = f.read().splitlines()
 
-    # for loop could prolly get refactored into list comprehension.
+    # for loop could prolly get refactored into list comprehension. but i wont, cause it looks bad
+
     for line in range(len(data)):
         i = data[line].split()
         seq_dict[i[0]] = i[1]
@@ -115,12 +116,9 @@ def get_left_overlaps(*args):  # overlaps:dict = get_all_overlaps(), read: str =
             "u is passing bad args, pass good args instead, either (dict,'readX') or 'ReadX' for default dict from RPATH file"
         )
     # func start ↓
-    returnlist = []
-
-    for each in overlaps:
-        if overlaps[each] is not overlaps[read]:
-            returnlist.append(overlaps[each][read])
-    return sorted(returnlist)
+    return sorted(
+        [overlaps[x][read] for x in overlaps if overlaps[x] is not overlaps[read]]
+    )
 
 
 def find_first_read(overlaps: dict = get_all_overlaps()):
