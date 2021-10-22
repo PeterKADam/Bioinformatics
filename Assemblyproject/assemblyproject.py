@@ -47,7 +47,7 @@ def read_data(filename: str = RPATH):
 
 
 # join all values in one string and divides by nr of elements.
-def mean_length(seqdict: dict = read_data()):
+def mean_length(seqdict):
     return len("".join(seqdict.values())) / len(seqdict.values())
 
 
@@ -86,12 +86,11 @@ def get_overlap(left: str, right: str):
 
 def get_all_overlaps(readdata: dict = read_data()):
 
-    # make whole function a oneline list(dict) comprehension? for-loops makes brain hurt
-
     overlapdict = {}
 
     for each in readdata.keys():
         overlapdict[each] = {}
+
         for every in readdata.keys():
             if not every == each:
                 overlapdict[each][every] = len(
@@ -102,8 +101,7 @@ def get_all_overlaps(readdata: dict = read_data()):
 
 
 def get_left_overlaps(*args):  # overlaps:dict = get_all_overlaps(), read: str =None):
-    # stupid arg handling to get over bad assignment parameters
-    # yes it's necessary, have some principles.
+    # stupid arg handling to get past bad assignment parameters
     if type(args[0]) is str:
         overlaps = get_all_overlaps()
         read = args[0]
@@ -112,7 +110,7 @@ def get_left_overlaps(*args):  # overlaps:dict = get_all_overlaps(), read: str =
         read = args[1]
     else:
         print(
-            "u is passing bad args, pass good args instead, either (dict,'readX') or 'ReadX' for default dict from RPATH file"
+            "u is passing bad args, pass good args instead. Either (dict,'readX') or 'ReadX' for default dict from RPATH file"
         )
     # func start ↓
     returnlist = []
@@ -124,10 +122,10 @@ def get_left_overlaps(*args):  # overlaps:dict = get_all_overlaps(), read: str =
 
 
 def find_first_read(overlaps: dict = get_all_overlaps()):
-    # do i smell a list comprehension refactor?
+
     sumdict = {}
     for each in overlaps.keys():
-        sumdict[each] = sum(get_left_overlaps(str(each)))
+        sumdict[each] = sum(get_left_overlaps(overlaps, str(each)))
     return min(sumdict, key=sumdict.get)
 
 
