@@ -46,7 +46,7 @@ def read_data(filename: str = RPATH):
     return seq_dict
 
 
-# join all values in one string and divides by nr of elements.
+# join all element values into one string and divides by nr of elements.
 def mean_length(seqdict):
     return len("".join(seqdict.values())) / len(seqdict.values())
 
