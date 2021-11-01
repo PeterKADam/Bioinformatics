@@ -1090,3 +1090,4 @@ if __name__ == "__main__":
     runner = AnvProgTestRunner(failfast=failfast)
     test_result = runner.run(cases)
     sys.exit(int(not test_result.wasSuccessful()))
+
