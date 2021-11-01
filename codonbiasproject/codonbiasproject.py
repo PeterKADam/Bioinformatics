@@ -89,7 +89,9 @@ def split_codons(orf):
 
 
 def count_codons(orf: str):
+
     d = {x: 0 for x in codon_map.keys()}
+
     for codon in split_codons(orf):
         if codon in codon_map:
             d[codon] = d[codon] + 1
@@ -97,13 +99,16 @@ def count_codons(orf: str):
 
 
 def group_counts_by_amino_acid(counts: dict):
+
     d = {x: {} for x in codon_map.values()}
+
     for codon in counts.keys():
         d[codon_map[codon]][codon] = counts[codon]
     return d
 
 
 def normalize_counts(grouped_counts: dict):
+
     if sum(grouped_counts.values()) > 0:
         return {
             codon: grouped_counts[codon] / sum(grouped_counts.values())
@@ -114,9 +119,11 @@ def normalize_counts(grouped_counts: dict):
 def normalize_grouped_counts(grouped_counts: dict):
 
     d = {}
+
     for acid in grouped_counts.keys():
         if sum(grouped_counts[acid].values()) > 0:
             d[acid] = normalize_counts(grouped_counts[acid])
+
     return d
 
 
