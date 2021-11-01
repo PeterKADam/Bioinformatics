@@ -160,7 +160,11 @@ def reconstruct_sequence(order: list, reads: dict, overlaps: dict):
 def assemble_genome(path: str = RPATH):
     # why is this function a thing?, nested hardcoded functions gallore :(
     RPATH = path
-    return reconstruct_sequence(find_order_of_reads(), read_data(), get_all_overlaps())
+    return reconstruct_sequence(
+        find_order_of_reads(),
+        read_data(),
+        get_all_overlaps()
+        )
 
 
 #############################################################

@@ -426,9 +426,10 @@ test_overlaps =  {'Read1': {'Read6': 29, 'Read5': 1, 'Read4': 0, 'Read3': 0, 'Re
                   'Read2': {'Read1': 13, 'Read5': 21, 'Read6': 0, 'Read3': 1, 'Read4': 0}, 
                   'Read5': {'Read1': 39, 'Read4': 0, 'Read6': 14, 'Read3': 0, 'Read2': 1}, 
                   'Read6': {'Read1': 0, 'Read5': 0, 'Read4': 1, 'Read3': 43, 'Read2': 0}, 
-                  'Read4': {'Read1': 1, 'Read5': 2, 'Read6': 0, 'Read3': 1, 'Read2': 17}}
+                  'Read4': {'Read1': 1, 'Read5': 2, 'Read6': 0, 'Read3': 1, 'Read2': 17}  }
 
-test_print = """       Read1 Read2 Read3 Read4 Read5 Read6
+test_print =
+"""       Read1 Read2 Read3 Read4 Read5 Read6
  Read1     -     1     0     0     1    29
  Read2    13     -     1     0    21     0
  Read3     0     0     -     1     0     1
