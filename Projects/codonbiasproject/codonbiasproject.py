@@ -75,7 +75,7 @@ codon_map = {
 if __name__ != "__main__":
     RPATH = "sample_orfs.txt"
 else:
-    RPATH = "codonbiasproject\sample_orfs.txt"
+    RPATH = "Projects\codonbiasproject\sample_orfs.txt"
 
 
 def read_data(filename: str = RPATH):

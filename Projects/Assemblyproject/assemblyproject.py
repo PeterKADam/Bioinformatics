@@ -9,7 +9,7 @@
 from os import read
 from typing import Counter, Sequence
 
-RPATH = "Assemblyproject\\sequencing_reads.txt"
+RPATH = "Projects\Assemblyproject\sequencing_reads.txt"
 if __name__ != "__main__":
     RPATH = "sequencing_reads.txt"
 
@@ -160,11 +160,7 @@ def reconstruct_sequence(order: list, reads: dict, overlaps: dict):
 def assemble_genome(path: str = RPATH):
     # why is this function a thing?, nested hardcoded functions gallore :(
     RPATH = path
-    return reconstruct_sequence(
-        find_order_of_reads(),
-        read_data(),
-        get_all_overlaps()
-        )
+    return reconstruct_sequence(find_order_of_reads(), read_data(), get_all_overlaps())
 
 
 #############################################################
