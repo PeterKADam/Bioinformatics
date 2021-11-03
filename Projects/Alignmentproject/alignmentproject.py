@@ -29,11 +29,7 @@ def print_dp_matrix(seq1, seq2, matrix):
 # only your function definitions...
 def empty_matrix(len_seq1: int, len_seq2: int):
 
-    matrix = []
-
-    for each in range(len_seq1):
-        matrix.append([None] * len_seq2)
-    return matrix
+    return [[None] * len_seq2 for _ in range(len_seq1)]
 
 
 def prepare_matrix(len_seq1: int, len_seq2: int, gap_score: int):

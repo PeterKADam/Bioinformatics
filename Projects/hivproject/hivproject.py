@@ -16,12 +16,7 @@ def read_data(hivtype):
 
 
 def sequence_similarity(seq1, seq2):
-    d = 0
-    # range is retardproofed by user verification and is equal for both args
-    for i in range(len(seq1)):
-        if seq1[i] == seq2[i]:
-            d += 1
-
+    d = sum(seq1[i] == seq2[i] for i in range(len(seq1)))
     return d / len(seq1)
 
 
