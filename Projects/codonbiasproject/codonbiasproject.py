@@ -100,9 +100,9 @@ def count_codons(orf: str):
 
 def group_counts_by_amino_acid(counts: dict):
 
-    d = {x: {} for x in codon_map.values()}
+    d = {acid: {} for acid in codon_map.values()}
 
-    for codon in counts.keys():
+    for codon in counts:
         d[codon_map[codon]][codon] = counts[codon]
     return d
 

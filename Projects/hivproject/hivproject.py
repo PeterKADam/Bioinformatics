@@ -4,13 +4,11 @@
 #############################################################
 
 # only your function definitions...
-
-
 def read_data(hivtype):
     if hivtype == "unknown":
-        RPATH = "Projects\hivproject\unknown_type.txt"
+        RPATH = r"Projects\hivproject\unknown_type.txt"
     else:
-        RPATH = "Projects\hivproject\subtype{}.txt".format(hivtype)
+        RPATH = r"Projects\hivproject\subtype{}.txt".format(hivtype)
     with open(RPATH) as f:
         return "".join([x for x in f.read().splitlines()])
 
