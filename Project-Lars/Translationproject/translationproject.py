@@ -71,16 +71,29 @@ codon_map = {
 #############################################################
 
 # only your function definitions...
-
-
 def translate_codon(codon):
-    return codon_map[codon] if codon in codon_map else "?"
+    if codon in codon_map:
+        return codon_map[codon]
+    else:
+        return "?"
+
 
 def split_codons(orf):
-    return [orf[x : x + 3] for x in range(0, len(orf), 3)]
+    result = []
+    for i in range(0, len(orf), 3):
+        result.append(orf[i : i + 3])
+    return result
+
 
 def translate_orf(seq):
-    return "".join([translate_codon(x) for x in split_codons(seq)])
+    result = []  # Tom liste
+    for codon in split_codons(
+        seq
+    ):  # Går igennem de forskellige værdier i listen fra split_codons
+        result.append(
+            translate_codon(codon)
+        )  # Tilføjer den enkelte værdi der tilhører nøglen "Codon"
+    return "".join(result)
 
 
 #############################################################
@@ -89,7 +102,10 @@ def translate_orf(seq):
 # your script in this way, you are less likely to make mistakes.
 #############################################################
 
-# print(split_codons("AAATTTCCCGGG"))
 # any other code ...
 
-#I am inevitable
+print(translate_codon("ACG"))
+
+print(split_codons("ATGGAGCTTANCAAATAG"))
+
+print(translate_orf("ATGGAGCTTANCAAATAG"))
