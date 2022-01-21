@@ -54,6 +54,18 @@ def get_similarities(unknownseq, typelist):
     return list
 
 
+def get_max_similarities(seq, dic):
+    highest = {}
+    for typeset in dic:
+        highest[typeset] = max(get_similarities(seq, dic[typeset]))
+    return highest
+
+
+def predict_subtype(seq, dic):
+    var = get_max_similarities(seq, dic)
+    return max(var, key=var.get)  # Returnerer den nøgle, hvorved maks værdi er
+
+
 #############################################################
 # Code for calling and testing your functions should be below
 # here. If you separate function definitions from the rest of
@@ -63,5 +75,5 @@ def get_similarities(unknownseq, typelist):
 # any other code ...
 
 
-print(get_similarities(unknown_list[0], typed_data["A"]))
+print(predict_subtype(unknown_list[0], typed_data))
 # print(typed_data["A"])
