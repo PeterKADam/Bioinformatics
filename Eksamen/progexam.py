@@ -26,10 +26,10 @@ def mean_hydrophobicity(hscores):
 
 
 def running_mean(hscores, overlaps):
-    meanhscorelist = []
-    for each in range(len(hscores) - overlaps + 1):
-        meanhscorelist.append(sum(hscores[each : each + overlaps]) / overlaps)
-    return meanhscorelist
+    return [
+        sum(hscores[each : each + overlaps]) / overlaps
+        for each in range(len(hscores) - overlaps + 1)
+    ]
 
 
 def find_hydrophobic(pseq, hscores):
@@ -68,10 +68,7 @@ def neighbor_hydrophobicity(pseq, hscores):
         if each > 0:
             dict[pseq[each]][0] += hscores[each - 1]
             dict[pseq[each]][1] += 1
-    returndict = {}
-    for each in dict:
-        returndict[each] = dict[each][0] / dict[each][1]
-    return returndict
+    return {each: dict[each][0] / dict[each][1] for each in dict}
 
 
 ######################################################################
