@@ -38,8 +38,10 @@ def find_hydrophobic(pseq, hscores):
 
 def mask_hydrophobic_aa(pseq, hscores):
     return "".join(
-        pseq[each].lower() if hscores[each] > 0 else pseq[each]
-        for each in range(len(pseq))
+        [
+            [pseq[each], pseq[each].lower()][hscores[each] > 0]
+            for each in range(len(pseq))
+        ]
     )
 
 
