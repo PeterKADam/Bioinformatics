@@ -70,7 +70,7 @@ def get_overlap_deprecated(left, right): # old overlap function
 '''
 
 
-def get_overlap(left: str, right: str):
+def get_overlap(left: str, right: str): #
 
     for current in range(min(len(right), len(left))):
         if left[current:] in right and left[current:].startswith(

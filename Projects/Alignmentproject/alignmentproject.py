@@ -80,55 +80,57 @@ def get_traceback_arrow(matrix, row, col, match_score, gap_score):
 def trace_back(seq1, seq2, matrix, score_matrix, gap_score):
 
     # Strings to store the growing alignment strings:
-    aligned1 = ""
-    aligned2 = ""
-    # continues...
+    aligned1 = ''
+    aligned2 = ''
+
     # The row and col index of the bottom right cell:
     row = len(seq1)
     col = len(seq2)
+
     # Keep stepping backwards through the matrix untill
     # we get to the top row or the left col:
     while row > 0 and col > 0:
+
         # The two bases we available to match:
-        base1 = seq1[row - 1]
-        base2 = seq2[col - 1]
+        base1 = seq1[row-1]
+        base2 = seq2[col-1]
+
         # The score for mathing those two bases:
         match_score = score_matrix[base1][base2]
+
         # Find out which cell the score in the current cell was derived from:
         traceback_arrow = get_traceback_arrow(matrix, row, col, match_score, gap_score)
-        if traceback_arrow == "diagonal":
-            # last column of the sub alignment is base1 over base2:
+
+        if traceback_arrow == 'diagonal':
             aligned1 = base1 + aligned1
             aligned2 = base2 + aligned2
-            # next cell is the diagonal cell:
             row -= 1
             col -= 1
-        elif traceback_arrow == "up":
-            # last column in the sub alignment is base1 over a gap:
+        elif traceback_arrow == 'up':
             aligned1 = base1 + aligned1
-            aligned2 = "-" + aligned2
-            # next cell is the cell above:
+            aligned2 = '-' + aligned2
             row -= 1
-        elif traceback_arrow == "left":
-            # last column in the sub alignment is a gap over base2:
-            aligned1 = "-" + aligned1
-            aligned2 = base2 + aligned2
-            # next cell is the cell to the left:
-            col -= 1
-            # continues...
-            # If row is not zero, step along the top row to the top left cell:
-        while row > 0:
-            base1 = seq1[row - 1]
-            aligned1 = base1 + aligned1
-            aligned2 = "-" + aligned2
-            row -= 1
-            # If col is not zero, step upwards in the left col to the top left cell:
-        while col > 0:
-            base2 = seq2[col - 1]
-            aligned1 = "-" + aligned1
+        elif traceback_arrow == 'left':
+            aligned1 = '-' + aligned1
             aligned2 = base2 + aligned2
             col -= 1
-        return [aligned1, aligned2]
+
+    # If row is not zero, step along the top row to the top left cell:
+    while row > 0:
+        base1 = seq1[row-1]
+        aligned1 = base1 + aligned1
+        aligned2 = '-' + aligned2
+        row -= 1
+
+    # If col is not zero, step upwards in the left col to the top left cell:
+    while col > 0:
+        base2 = seq2[col-1]
+        aligned1 = '-' + aligned1
+        aligned2 = base2 + aligned2
+        col -= 1
+
+    return [aligned1, aligned2]
+
 
 
 def align(seq1, seq2, score_matrix, gap_score):

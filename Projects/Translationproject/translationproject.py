@@ -76,10 +76,8 @@ codon_map = {
 def translate_codon(codon):
     return codon_map[codon] if codon in codon_map else "?"
 
-
 def split_codons(orf):
     return [orf[x : x + 3] for x in range(0, len(orf), 3)]
-
 
 def translate_orf(seq):
     return "".join([translate_codon(x) for x in split_codons(seq)])
@@ -94,3 +92,4 @@ def translate_orf(seq):
 # print(split_codons("AAATTTCCCGGG"))
 # any other code ...
 
+#I am inevitable
