@@ -21,7 +21,8 @@ def sequence_similarity(seq1, seq2):
 def alignment_similarity(seq1_gap, seq2_gap):
     gaps = 0
     d = 0
-    for i in range(len(seq1_gap)):
+    
+    for i in range(min(len(seq1_gap), len(seq2_gap))):
         if seq1_gap[i] == "-" and seq2_gap[i] == "-":
             gaps += 1
             continue
@@ -44,6 +45,11 @@ def get_similarities(unknownseq, db_type_seq_list):
     return [alignment_similarity(unknownseq, x) for x in db_type_seq_list]
 
 
+def get_max_similarities(uhiv, dict):
+
+    return
+
+
 #############################################################
 # Code for calling and testing your functions should be below
 # here. If you separate function definitions from the rest of
@@ -53,4 +59,6 @@ def get_similarities(unknownseq, db_type_seq_list):
 # any other code ...
 
 # print(alignment_similarity("A-CT-A", "A-CTTA"))
-print(get_similarities(read_data("unknown"), load_typed_sequences()))
+# print(load_typed_sequences()["A"])
+# print(read_data("unknown"))
+print(get_similarities(read_data("unknown"), load_typed_sequences()["A"]))
