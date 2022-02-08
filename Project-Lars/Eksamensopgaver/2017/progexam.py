@@ -3,9 +3,6 @@
 # Problem 1
 
 
-from pickle import NONE
-
-
 def get_number_of_bases(seq):
     return len(seq)
 
@@ -15,8 +12,8 @@ def get_number_of_bases(seq):
 
 def count_bases(seq):
     dict = {"A": 0, "T": 0, "G": 0, "C": 0}
-    for i in range(len(seq)):
-        dict[seq[i]] += 1
+    for i in seq:
+        dict[i] += 1
     return dict
 
 
@@ -105,7 +102,7 @@ def substitutions(seq1, seq2):
 def self_comparison(seq):
     matrix = []
     for every in range(len(seq)):
-        matrix.append([NONE] * len(seq))
+        matrix.append([None] * len(seq))
 
     for i in range(len(seq)):
         for j in range(len(seq)):
