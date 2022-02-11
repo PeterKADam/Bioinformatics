@@ -13,12 +13,7 @@ def same_length(pseq, hscores):
 
 
 def aminoacid_counts(pseq):
-    dict = {}
-    for each in range(len(pseq)):
-        if pseq[each] not in dict:
-            dict[pseq[each]] = 0
-        dict[pseq[each]] += 1
-    return dict
+    return {k: pseq.count(k) for k in pseq}
 
 
 def mean_hydrophobicity(hscores):
@@ -33,25 +28,20 @@ def running_mean(hscores, overlaps):
 
 
 def find_hydrophobic(pseq, hscores):
-    return [pseq[each] for each in range(len(pseq)) if hscores[each] > 0]
+    return [a for a, b in zip(pseq, hscores) if b > 0]
 
 
 def mask_hydrophobic_aa(pseq, hscores):
-    return "".join(
-        [
-            [pseq[each], pseq[each].lower()][hscores[each] > 0]
-            for each in range(len(pseq))
-        ]
-    )
+    return "".join([a.lower() if b > 0 else a for a, b in zip(pseq, hscores)])
 
 
 def hydrophobic_subseqs(pseq, hscores):
     subseqlist = []
     subsublist = []
-    for each in range(len(pseq)):
-        if hscores[each] > 0:
-            subsublist.append(pseq[each])
-        elif hscores[each] <= 0 and len(subsublist) > 0:
+    for a, b in zip(pseq, hscores):
+        if b > 0:
+            subsublist.append(a)
+        elif b <= 0 and len(subsublist) > 0:
             subseqlist.append("".join(subsublist))
             subsublist = []
     if len(subsublist) > 0:
@@ -61,15 +51,15 @@ def hydrophobic_subseqs(pseq, hscores):
 
 def neighbor_hydrophobicity(pseq, hscores):
     dict = {}
-    for each in range(len(pseq)):
-        if pseq[each] not in dict:
-            dict[pseq[each]] = [0, 0]
-        if each < len(pseq) - 1:
-            dict[pseq[each]][0] += hscores[each + 1]
-            dict[pseq[each]][1] += 1
-        if each > 0:
-            dict[pseq[each]][0] += hscores[each - 1]
-            dict[pseq[each]][1] += 1
+    for i, (a, b) in enumerate(zip(pseq, hscores)):
+        if a not in dict:
+            dict[a] = [0, 0]
+        if i < len(pseq) - 1:
+            dict[a][0] += hscores[i + 1]
+            dict[a][1] += 1
+        if i > 0:
+            dict[a][0] += hscores[i - 1]
+            dict[a][1] += 1
     return {each: dict[each][0] / dict[each][1] for each in dict}
 
 
