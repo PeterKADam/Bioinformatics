@@ -1,0 +1,66 @@
+
+Eval cases for global alignment usign linear and affine gap cost
+----------------------------------------------------------------
+
+Consider the score matrix M for dna sequences
+
+   A  C  G  T
+A  0  5  2  5
+C  5  0  5  2
+G  2  5  0  5
+T  5  2  5  0
+
+and the following 5 sequences
+
+>seq1
+tatggagagaataaaagaactgagagatctaatgtcgcagtcccgcactcgcgagatact
+cactaagaccactgtggaccatatggccataatcaaaaag
+
+>seq2
+atggatgtcaatccgactctacttttcctaaaaattccagcgcaaaatgccataagcacc
+acattcccttatactggagatcctccatacagccatggaa
+
+>seq3
+tccaaaatggaagactttgtgcgacaatgcttcaatccaatgatcgtcgagcttgcggaa
+aaggcaatgaaagaatatggggaagatccgaaaatcgaaa
+
+>seq4
+aaaagcaacaaaaatgaaggcaatactagtagttctgctatatacatttgcaaccgcaaa
+tgcagacacattatgtataggttatcatgcgaacaattca
+
+>seq5
+atgagtgacatcgaagccatggcgtctcaaggcaccaaacgatcatatgaacaaatggag
+actggtggggagcgccaggatgccacagaaatcagagcat
+
+
+In your report include the answers to the following questions.
+
+Question 1 
+---------- 
+
+Compute the score of an optimal alignment and an optimal alignment of
+seq1 and seq2 above using the programs global_linear using the above
+score matrix M and gap cost g(k)=5*k
+
+Question 2
+----------
+
+Compute the score of an optimal alignment and an optimal alignment of
+seq1 and seq2 above using the program global_affine using the above
+score matrix M and gap cost g(k)=5+5*k
+
+Question 3
+----------
+
+Compute the optimal score of an optimal alignment for each pair of the
+5 sequences above using global_linear with the score matrix M and gap
+cost g(k)=5*k. The result is a 5x5 table where entry (i,j) the optimal
+score of an alignment of seqi and seqj.
+
+Question 4
+----------
+
+Compute the optimal score of an optimal alignment for each pair of the
+5 sequences above using global_affine with the score matrix M and gap
+cost g(k)=5+5*k. The result is a 5x5 table where entry (i,j) the
+optimal score of an alignment of seqi and seqj.

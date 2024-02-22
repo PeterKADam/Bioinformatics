@@ -1,0 +1,161 @@
+
+Test cases for global alignment usign linear and affine gap cost
+----------------------------------------------------------------
+
+Consider the below score matrix M for dna sequences:
+
+   A  C  G  T
+A  0  5  2  5
+C  5  0  5  2
+G  2  5  0  5
+T  5  2  5  0
+
+
+Case 1
+------
+
+>seq1
+acgtgtcaacgt 
+
+>seq2
+acgtcgtagcta 
+
+Using score matrix M and linear gap cost g(k)=5*k, the score of an optimal alignment is:
+
+22
+
+and there are 2 optimal alignments:
+
+acgt-gtcaacgt-
+acgtcgt-agc-ta
+
+acgt-gtcaacgt
+acgtcgt-agcta
+
+Using affine gap cost g(k)=5+5*k, the score of an optimal alignment is:
+
+24
+
+and an optimal alignment is:
+
+acgtgtcaacgt
+acgtcgtagcta
+
+
+Case 2:
+-------
+
+>seq1
+aataat
+
+>seq2
+aagg
+
+Using score matrix M and linear gap cost g(k)=5*k, the score of an optimal alignment is:
+
+14
+
+and an optimal alignment is:
+
+aataat
+aa-gg-
+
+Using affine gap cost g(k)=5+5*k, the score of an optimal alignment is:
+
+22
+
+and there are 3 optimal alignments:
+
+aataat
+aagg--
+
+aataat
+aa--gg
+
+aataat
+a--agg
+
+
+Case 3:
+-------
+
+>seq1
+tccagaga
+
+>seq2
+tcgat
+
+Using score matrix M and linear gap cost g(k)=5*k, the score of an optimal alignment is:
+
+20
+
+and there are 4 possible optimal alignments:
+
+tccagaga
+tc--gat-
+
+tccagaga
+t-c-gat-
+
+tccagaga
+tc--ga-t
+
+tccagaga
+t-c-ga-t
+
+Using affine gap cost g(k)=5+5*k, the score of an optimal alignment is:
+
+29
+
+and there is one optimal alignment:
+
+tccagaga
+tc---gat
+
+
+Case 4
+------
+
+>seq1
+ggcctaaaggcgccggtctttcgtaccccaaaatctcggcattttaagataagtgagtgttgcgttacactagcgatcta
+ccgcgtcttatacttaagcgtatgcccagatctgactaatcgtgcccccggattagacgggcttgatgggaaagaacagc
+tcgtctgtttacgtataaacagaatcgcctgggttcgc
+
+>seq2
+gggctaaaggttagggtctttcacactaaagagtggtgcgtatcgtggctaatgtaccgcttctggtatcgtggcttacg
+gccagacctacaagtactagacctgagaactaatcttgtcgagccttccattgagggtaatgggagagaacatcgagtca
+gaagttattcttgtttacgtagaatcgcctgggtccgc
+
+Using score matrix M and linear gap cost g(k)=5*k, the score of an optimal alignment is:
+
+325
+
+and there is 288 possible optimal alignments, one is (in fasta format):
+
+>seq1_align
+ggcctaaaggcgccggtctttcgtaccccaaaatctcg-gcattttaagataa-gtgagtgttgcgttacactagcgatct
+accgcgtcttatact-taagcg-tatgccc-agatctga-ctaatcgtgcccccggattagacgggcttgatgggaaagaa
+ca--g-ctc-g--tctgtttacgtataaacagaatcgcctgggttcgc
+
+>seq2_align
+gggctaaaggttagggtctttcacactaaagagtggtgcgtatcgt-ggctaatgt-accgcttc-tggtatc-gtggctt
+a-cg-gccagac-ctacaagtactagacctgagaactaatcttgtcgagccttc-catt-ga-ggg--taatgggagagaa
+catcgagtcagaagttattcttgtttacgtagaatcgcctgggtccgc
+
+Using affine gap cost g(k)=5+5*k, the score of an optimal alignment is:
+
+395  
+
+and there is 4 possible optimal alignments, one is (in fasta format):
+
+>seq1_align
+ggcctaaaggcgccggtctttcgtaccccaaaatctcggcattttaagataagtgagtgttgcgttacactagcgatctacc
+gcgtcttatacttaagcgtatgcccagatctgactaatcgtgcccccggattagacgggcttgatgggaaagaacagctcgt
+c------tgtttacgtataaacagaatcgcctgggttcgc
+
+>seq2_align
+gggctaaaggttagggtctttcacactaaagagtggt-gcgtatcgtggctaatgtaccgcttctggtatc-gtggcttacg
+gc--cagacctacaagtactagacctga--gaactaatcttgtcgagccttccattgagggtaatgggagagaacatcgagt
+cagaagttattcttgtttacgtagaatcgcctgggtccgc
+
+
