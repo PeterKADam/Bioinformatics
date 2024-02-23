@@ -31,6 +31,7 @@ seq2 = "ACGTCGTAGCTA"
 print("CASE1: Linear Global Alignment: gapcost = 5")
 M = LinearGlobalAlignment(seq1, seq2, MATCH_SCORES_3, 5)
 M_affine = AffineGlobalAlignment(seq1, seq2, MATCH_SCORES_3, 5, 5)
+
 M_affine.prepare_matrixes()
 M_affine.fill_matrixes()
 M_affine.print_matrix_set()
@@ -53,7 +54,7 @@ M3.print_finish_matrix()
 
 # CASE4 apparntly wrong?
 print("\nCASE4: Linear Global Alignment: gapcost = 5")
-seq7 = "GGCCTAAAGGCGCCGGTCTTTCGTACCCCAAAATCTCGGCATTTTAAGATAAGTGAGTGTGCGTTACACTAGCGATCTACCGCGTCTTATACTTAAGCGTATGCCCAGATCTGACTAATCGTGCCCCGGATTAGACGGGCTTGATGGGAAAGAACAGCTCGTCTGTTTACGTATAAACAGAATCGCCTGGGTTCGC"
-seq8 = "GGGCTAAAGGTTAGGGTCTTTCACACTAAAGAGTGGTGCATATCGTGGCTAATGTACCGCTTCTGGTATCGTGGCTTACGGCCAGACCTACAAGTACTAGACCTGAGAACTAATCTTGTCGAGCCTTCCATTGAGGGTAATGGGAGAGAACATCGAGTCAGAAGTTATTCTTGTTTACGTAGAATCGCCTGGGTCCGC"
+seq7 = "ggcctaaaggcgccggtctttcgtaccccaaaatctcggcattttaagataagtgagtgttgcgttacactagcgatctaccgcgtcttatacttaagcgtatgcccagatctgactaatcgtgcccccggattagacgggcttgatgggaaagaacagctcgtctgtttacgtataaacagaatcgcctgggttcgc"
+seq8 = "gggctaaaggttagggtctttcacactaaagagtggtgcgtatcgtggctaatgtaccgcttctggtatcgtggcttacggccagacctacaagtactagacctgagaactaatcttgtcgagccttccattgagggtaatgggagagaacatcgagtcagaagttattcttgtttacgtagaatcgcctgggtccgc"
 M4 = LinearGlobalAlignment(seq7, seq8, MATCH_SCORES_3, 5)
 M4.print_finish_matrix()
