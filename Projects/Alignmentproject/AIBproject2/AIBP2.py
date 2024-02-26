@@ -7,8 +7,15 @@ class alignment_matrix:
         self.sequence2 = sequence2.upper()
         self.score_matrix = score_matrix
         self.gap_cost = gap_cost
+        self.gap_open = 0
         self.matrix = self.empty_matrix()
         self.alignments = []
+        self.completealignment()
+
+    def completealignment(self):
+        self.prepare_matrixes()
+        self.fill_matrixes()
+        self.get_alignments()
 
     def empty_matrix(self):
         return [
@@ -43,19 +50,106 @@ class alignment_matrix:
                 f"the start of one of the alignments is:\n\t{self.alignments[0][0][:100]}\n\t{self.alignments[0][1][:100]}\n"
             )
 
+    def get_alignments(self):
+        alignments = self.traceback_recursive(len(self.sequence2), len(self.sequence1))
+        # Reverse the completed strings
+        self.alignments = [(a1[::-1], a2[::-1]) for a1, a2 in alignments]
+
+    def print_finish_matrix(self):
+
+        self.print_dp_matrix(self.matrix)
+        print(f"maximum is : {self.matrix[-1][-1]}")
+        self.get_alignments()
+        self.niceprint_alignments()
+
+    def traceback_recursive(self, row, col):
+        if row == 0 and col == 0:
+            return [("", "")]
+        elif row == 0:
+            return [(col * "-", self.sequence1[:col])]
+        elif col == 0:
+            return [(self.sequence2[:row], row * "-")]
+
+        arrows = self.get_traceback_arrows(
+            row,
+            col,
+        )
+
+        alignments = []
+
+        for arrow in arrows:
+            n, direction = arrow.split("_")
+            n = int(n)
+            if direction == "diagonal":
+                sub_alignments = self.traceback_recursive(row - n, col - n)
+                alignments.extend(
+                    [
+                        (self.sequence2[row - n] + a1, self.sequence1[col - n] + a2)
+                        for a1, a2 in sub_alignments
+                    ]
+                )
+            elif direction == "up":
+                sub_alignments = self.traceback_recursive(row - n, col)
+                alignments.extend(
+                    [
+                        (self.sequence2[row - n] + a1, (n * "-") + a2)
+                        for a1, a2 in sub_alignments
+                    ]
+                )
+            elif direction == "left":
+                sub_alignments = self.traceback_recursive(row, col - n)
+                alignments.extend(
+                    [
+                        ((n * "-") + a1, self.sequence1[col - n] + a2)
+                        for a1, a2 in sub_alignments
+                    ]
+                )
+
+        return alignments
+
+    def get_traceback_arrows(self, row, col):
+        score_diagonal = self.matrix[row - 1][col - 1]
+
+        score_current = self.matrix[row][col]
+
+        arrows = []
+
+        match_score = self.score_matrix[self.sequence2[row - 1]][
+            self.sequence1[col - 1]
+        ]
+
+        if score_current == score_diagonal + match_score:
+            arrows.append("1_diagonal")
+
+        for n in range(1, row, 1):
+            if score_current == self.matrix[row - n][col] + self.gap_open + (
+                self.gap_cost * n
+            ):
+                arrows.append(f"{n}_up")
+                break
+
+        for n in range(1, col, 1):
+            if score_current == self.matrix[row][col - n] + self.gap_open + (
+                self.gap_cost * n
+            ):
+                arrows.append(f"{n}_left")
+                break
+
+        return arrows
+
 
 class LinearGlobalAlignment(alignment_matrix):
     def __init__(self, sequence1, sequence2, score_matrix, gap_cost):
         super().__init__(sequence1, sequence2, score_matrix, gap_cost)
 
-    def prepare_matrix(self):
+    def prepare_matrixes(self):
         for col in range(len(self.sequence1) + 1):
             self.matrix[0][col] = col * self.gap_cost
 
         for row in range(len(self.sequence2) + 1):
             self.matrix[row][0] = row * self.gap_cost
 
-    def fill_matrix(self):
+    def fill_matrixes(self):
 
         for col in range(1, len(self.sequence1) + 1):  # j
             for row in range(1, len(self.sequence2) + 1):  # i
@@ -71,81 +165,6 @@ class LinearGlobalAlignment(alignment_matrix):
                     # c(i-1, j) + gapcost
                     self.matrix[row - 1][col] + self.gap_cost,
                 )
-
-    def get_traceback_arrows(self, row, col, match_score, gap_score):
-        score_diagonal = self.matrix[row - 1][col - 1]
-        score_left = self.matrix[row][col - 1]
-        score_up = self.matrix[row - 1][col]
-
-        score_current = self.matrix[row][col]
-
-        arrows = []
-
-        if score_current == score_diagonal + match_score:
-            arrows.append("diagonal")
-        if score_current == score_left + gap_score:
-            arrows.append("left")
-        if score_current == score_up + gap_score:
-            arrows.append("up")
-
-        return arrows
-
-    def traceback_recursive(self, row, col):
-        if row == 0 and col == 0:
-            return [("", "")]
-        elif row == 0:
-            return [(col * "-", self.sequence1[:col])]
-        elif col == 0:
-            return [(self.sequence2[:row], row * "-")]
-
-        arrows = self.get_traceback_arrows(
-            row,
-            col,
-            self.score_matrix[self.sequence2[row - 1]][self.sequence1[col - 1]],
-            self.gap_cost,
-        )
-
-        alignments = []
-        for arrow in arrows:
-            if arrow == "diagonal":
-                sub_alignments = self.traceback_recursive(row - 1, col - 1)
-                alignments.extend(
-                    [
-                        (self.sequence2[row - 1] + a1, self.sequence1[col - 1] + a2)
-                        for a1, a2 in sub_alignments
-                    ]
-                )
-            elif arrow == "up":
-                sub_alignments = self.traceback_recursive(row - 1, col)
-                alignments.extend(
-                    [
-                        (self.sequence2[row - 1] + a1, "-" + a2)
-                        for a1, a2 in sub_alignments
-                    ]
-                )
-            elif arrow == "left":
-                sub_alignments = self.traceback_recursive(row, col - 1)
-                alignments.extend(
-                    [
-                        ("-" + a1, self.sequence1[col - 1] + a2)
-                        for a1, a2 in sub_alignments
-                    ]
-                )
-
-        return alignments
-
-    def get_alignments(self):
-        alignments = self.traceback_recursive(len(self.sequence2), len(self.sequence1))
-        # Reverse the completed strings
-        self.alignments = [(a1[::-1], a2[::-1]) for a1, a2 in alignments]
-
-    def print_finish_matrix(self):
-        self.prepare_matrix()
-        self.fill_matrix()
-        self.print_dp_matrix(self.matrix)
-        print(f"maximum is : {self.matrix[-1][-1]}")
-        self.get_alignments()
-        self.niceprint_alignments()
 
 
 class AffineGlobalAlignment(alignment_matrix):
