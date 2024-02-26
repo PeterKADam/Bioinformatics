@@ -1,5 +1,6 @@
 # from Bio import SeqIO
 
+
 class alignment_matrix:
     def __init__(self, sequence1, sequence2, score_matrix, gap_cost):
         self.sequence1 = sequence1.upper()
@@ -10,7 +11,9 @@ class alignment_matrix:
         self.alignments = []
 
     def empty_matrix(self):
-        return [[None] * (len(self.sequence1) + 1) for _ in range(len(self.sequence2) + 1)]
+        return [
+            [None] * (len(self.sequence1) + 1) for _ in range(len(self.sequence2) + 1)
+        ]
 
     def print_dp_matrix(self, matrix_object):
         if len(matrix_object) > 20:
@@ -29,7 +32,7 @@ class alignment_matrix:
         print(mat_fmt.format(*lst))
 
     def niceprint_alignments(self):
-        if len(self.alignments) == 0:  # No alignments
+        if len(self.alignments) == 0:
             print("No alignments found")
         elif len(self.alignments) <= 5:
             for i, a in enumerate(self.alignments, start=1):
@@ -58,21 +61,16 @@ class LinearGlobalAlignment(alignment_matrix):
             for row in range(1, len(self.sequence2) + 1):  # i
 
                 self.matrix[row][col] = min(
-                    # C(i-1, j-1) + gapcost
-                    self.matrix[row - 1][col - 1] + self.score_matrix[self.sequence1[col - 1]][self.sequence2[row - 1]],
+                    # C(i-1, j-1) + match
+                    self.matrix[row - 1][col - 1]
+                    + self.score_matrix[self.sequence1[col - 1]][
+                        self.sequence2[row - 1]
+                    ],
                     # c(i, j-1) + gapcost
                     self.matrix[row][col - 1] + self.gap_cost,
                     # c(i-1, j) + gapcost
                     self.matrix[row - 1][col] + self.gap_cost,
                 )
-
-    def print_finish_matrix(self):
-        self.prepare_matrix()
-        self.fill_matrix()
-        self.print_dp_matrix(self.matrix)
-        print(f"maximum is : {self.matrix[-1][-1]}")
-        self.get_alignments()
-        self.niceprint_alignments()
 
     def get_traceback_arrows(self, row, col, match_score, gap_score):
         score_diagonal = self.matrix[row - 1][col - 1]
@@ -112,14 +110,27 @@ class LinearGlobalAlignment(alignment_matrix):
             if arrow == "diagonal":
                 sub_alignments = self.traceback_recursive(row - 1, col - 1)
                 alignments.extend(
-                    [(self.sequence2[row - 1] + a1, self.sequence1[col - 1] + a2) for a1, a2 in sub_alignments]
+                    [
+                        (self.sequence2[row - 1] + a1, self.sequence1[col - 1] + a2)
+                        for a1, a2 in sub_alignments
+                    ]
                 )
             elif arrow == "up":
                 sub_alignments = self.traceback_recursive(row - 1, col)
-                alignments.extend([(self.sequence2[row - 1] + a1, "-" + a2) for a1, a2 in sub_alignments])
+                alignments.extend(
+                    [
+                        (self.sequence2[row - 1] + a1, "-" + a2)
+                        for a1, a2 in sub_alignments
+                    ]
+                )
             elif arrow == "left":
                 sub_alignments = self.traceback_recursive(row, col - 1)
-                alignments.extend([("-" + a1, self.sequence1[col - 1] + a2) for a1, a2 in sub_alignments])
+                alignments.extend(
+                    [
+                        ("-" + a1, self.sequence1[col - 1] + a2)
+                        for a1, a2 in sub_alignments
+                    ]
+                )
 
         return alignments
 
@@ -127,6 +138,14 @@ class LinearGlobalAlignment(alignment_matrix):
         alignments = self.traceback_recursive(len(self.sequence2), len(self.sequence1))
         # Reverse the completed strings
         self.alignments = [(a1[::-1], a2[::-1]) for a1, a2 in alignments]
+
+    def print_finish_matrix(self):
+        self.prepare_matrix()
+        self.fill_matrix()
+        self.print_dp_matrix(self.matrix)
+        print(f"maximum is : {self.matrix[-1][-1]}")
+        self.get_alignments()
+        self.niceprint_alignments()
 
 
 class AffineGlobalAlignment(alignment_matrix):
@@ -183,7 +202,10 @@ class AffineGlobalAlignment(alignment_matrix):
                 # Matrix M
                 self.matrix[row][col] = min(
                     # match
-                    self.matrix[row - 1][col - 1] + self.score_matrix[self.sequence1[col - 1]][self.sequence2[row - 1]],
+                    self.matrix[row - 1][col - 1]
+                    + self.score_matrix[self.sequence1[col - 1]][
+                        self.sequence2[row - 1]
+                    ],
                     # insert
                     self.matrixI[row][col],
                     # del
