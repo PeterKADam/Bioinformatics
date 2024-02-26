@@ -47,6 +47,9 @@ def main():
 
     matchscore = files.load_match_scores(args.matchscore)
 
+    print(seq1)
+    print(seq2)
+
     Alignments = AffineGlobalAlignment(
         seq1, seq2, matchscore, gapcost, gap_open
     ).alignments

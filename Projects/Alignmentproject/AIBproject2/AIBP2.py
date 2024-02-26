@@ -171,10 +171,10 @@ class AffineGlobalAlignment(alignment_matrix):
     def __init__(self, sequence1, sequence2, score_matrix, gap_cost, gap_open):
         super().__init__(sequence1, sequence2, score_matrix, gap_cost)
         self.gap_open = gap_open
-        self.matrixI = self.empty_matrix()
-        self.matrixD = self.empty_matrix()
 
     def prepare_matrixes(self):
+        self.matrixI = self.empty_matrix()
+        self.matrixD = self.empty_matrix()
         self.matrix[0][0] = self.matrixI[0][0] = self.matrixD[0][0] = 0
         for col in range(1, len(self.sequence1) + 1):
             self.matrix[0][col] = (col * self.gap_cost) + self.gap_open
