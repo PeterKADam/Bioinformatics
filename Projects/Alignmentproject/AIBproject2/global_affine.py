@@ -3,8 +3,6 @@ import argparse
 import os
 import files
 
-# these are not the matchscores youre looking for
-
 
 def main():
     parser = argparse.ArgumentParser(description="Process some sequences.")
@@ -40,6 +38,10 @@ def main():
 
         if seq2 and os.path.isfile(seq2):
             seq2 = files.load_sequences(args.multifile)
+        else:
+            print(
+                "Error: u did something dumdum, or we did. but probably u, but might be us, but are the sequences ok?"
+            )
     else:
         print(
             "Error: u did something dumdum, or we did. but probably u, but might be us, but are the sequences ok?"

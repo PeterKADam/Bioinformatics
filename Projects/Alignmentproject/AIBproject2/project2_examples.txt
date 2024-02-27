@@ -91,6 +91,15 @@ Using score matrix M and linear gap cost g(k)=5*k, the score of an optimal align
 
 and there are 4 possible optimal alignments:
 
+
+>alignment1
+tccagaga
+tc--gat-
+
+>alignment2
+tccagaga
+t-c-gat-
+
 tccagaga
 tc--gat-
 
