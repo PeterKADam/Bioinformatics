@@ -6,15 +6,9 @@ import files
 
 def main():
     parser = argparse.ArgumentParser(description="Process some sequences.")
-    parser.add_argument(
-        "--seq1", help="First sequence or path to the file containing it"
-    )
-    parser.add_argument(
-        "--seq2", help="Second sequence or path to the file containing it"
-    )
-    parser.add_argument(
-        "--multifile", help="Path to the file containing both sequences"
-    )
+    parser.add_argument("--seq1", help="First sequence or path to the file containing it")
+    parser.add_argument("--seq2", help="Second sequence or path to the file containing it")
+    parser.add_argument("--multifile", help="Path to the file containing both sequences")
     parser.add_argument("--matchscore", required=True, help="Match score")
     parser.add_argument("--gapcost", type=int, required=True, help="Gap cost")
     parser.add_argument("--gapopen", type=int, required=True, help="Gap open cost")
@@ -43,22 +37,19 @@ def main():
                 "Error: u did something dumdum, or we did. but probably u, but might be us, but are the sequences ok?"
             )
     else:
-        print(
-            "Error: u did something dumdum, or we did. but probably u, but might be us, but are the sequences ok?"
-        )
+        print("Error: u did something dumdum, or we did. but probably u, but might be us, but are the sequences ok?")
 
     matchscore = files.load_match_scores(args.matchscore)
 
     print(seq1)
     print(seq2)
 
-    Alignments = AffineGlobalAlignment(
-        seq1, seq2, matchscore, gapcost, gap_open
-    ).alignments
+    Alignment = AffineGlobalAlignment(seq1, seq2, matchscore, gapcost, gap_open)
 
+    Alignment.print_matrix_set()
     # print(Alignments)
     # Save the computed alignments in .fasta format
-    files.SaveAlignments(Alignments, "global_affine")
+    files.SaveAlignments(Alignment.alignments, "global_affine")
 
     print("Alignments saved in .fasta format. hopefully correctly.")
 

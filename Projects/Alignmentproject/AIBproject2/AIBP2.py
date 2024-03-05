@@ -12,15 +12,16 @@ class alignment_matrix:
         self.alignments = []
         self.completealignment()
 
+    def get_max(self):
+        return self.matrix[-1][-1]
+
     def completealignment(self):
         self.prepare_matrixes()
         self.fill_matrixes()
         self.get_alignments()
 
     def empty_matrix(self):
-        return [
-            [None] * (len(self.sequence1) + 1) for _ in range(len(self.sequence2) + 1)
-        ]
+        return [[None] * (len(self.sequence1) + 1) for _ in range(len(self.sequence2) + 1)]
 
     def print_dp_matrix(self, matrix_object):
         if len(matrix_object) > 20:
@@ -83,27 +84,14 @@ class alignment_matrix:
             if direction == "diagonal":
                 sub_alignments = self.traceback_recursive(row - n, col - n)
                 alignments.extend(
-                    [
-                        (self.sequence2[row - n] + a1, self.sequence1[col - n] + a2)
-                        for a1, a2 in sub_alignments
-                    ]
+                    [(self.sequence2[row - n] + a1, self.sequence1[col - n] + a2) for a1, a2 in sub_alignments]
                 )
             elif direction == "up":
                 sub_alignments = self.traceback_recursive(row - n, col)
-                alignments.extend(
-                    [
-                        (self.sequence2[row - n] + a1, (n * "-") + a2)
-                        for a1, a2 in sub_alignments
-                    ]
-                )
+                alignments.extend([(self.sequence2[row - n] + a1, (n * "-") + a2) for a1, a2 in sub_alignments])
             elif direction == "left":
                 sub_alignments = self.traceback_recursive(row, col - n)
-                alignments.extend(
-                    [
-                        ((n * "-") + a1, self.sequence1[col - n] + a2)
-                        for a1, a2 in sub_alignments
-                    ]
-                )
+                alignments.extend([((n * "-") + a1, self.sequence1[col - n] + a2) for a1, a2 in sub_alignments])
 
         return alignments
 
@@ -114,24 +102,18 @@ class alignment_matrix:
 
         arrows = []
 
-        match_score = self.score_matrix[self.sequence2[row - 1]][
-            self.sequence1[col - 1]
-        ]
+        match_score = self.score_matrix[self.sequence2[row - 1]][self.sequence1[col - 1]]
 
         if score_current == score_diagonal + match_score:
             arrows.append("1_diagonal")
 
         for n in range(1, row, 1):
-            if score_current == self.matrix[row - n][col] + self.gap_open + (
-                self.gap_cost * n
-            ):
+            if score_current == self.matrix[row - n][col] + self.gap_open + (self.gap_cost * n):
                 arrows.append(f"{n}_up")
                 break
 
         for n in range(1, col, 1):
-            if score_current == self.matrix[row][col - n] + self.gap_open + (
-                self.gap_cost * n
-            ):
+            if score_current == self.matrix[row][col - n] + self.gap_open + (self.gap_cost * n):
                 arrows.append(f"{n}_left")
                 break
 
@@ -156,10 +138,7 @@ class LinearGlobalAlignment(alignment_matrix):
 
                 self.matrix[row][col] = min(
                     # C(i-1, j-1) + match
-                    self.matrix[row - 1][col - 1]
-                    + self.score_matrix[self.sequence1[col - 1]][
-                        self.sequence2[row - 1]
-                    ],
+                    self.matrix[row - 1][col - 1] + self.score_matrix[self.sequence1[col - 1]][self.sequence2[row - 1]],
                     # c(i, j-1) + gapcost
                     self.matrix[row][col - 1] + self.gap_cost,
                     # c(i-1, j) + gapcost
@@ -221,10 +200,7 @@ class AffineGlobalAlignment(alignment_matrix):
                 # Matrix M
                 self.matrix[row][col] = min(
                     # match
-                    self.matrix[row - 1][col - 1]
-                    + self.score_matrix[self.sequence1[col - 1]][
-                        self.sequence2[row - 1]
-                    ],
+                    self.matrix[row - 1][col - 1] + self.score_matrix[self.sequence1[col - 1]][self.sequence2[row - 1]],
                     # insert
                     self.matrixI[row][col],
                     # del
