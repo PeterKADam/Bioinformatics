@@ -7,7 +7,6 @@ class alignment_matrix:
         self.sequence2 = sequence2.upper()
         self.score_matrix = score_matrix
         self.gap_cost = gap_cost
-        self.gap_open = 0
         self.matrix = self.empty_matrix()
         self.alignments = []
         self.completealignment()
@@ -122,6 +121,7 @@ class alignment_matrix:
 
 class LinearGlobalAlignment(alignment_matrix):
     def __init__(self, sequence1, sequence2, score_matrix, gap_cost):
+        self.gap_open = 0
         super().__init__(sequence1, sequence2, score_matrix, gap_cost)
 
     def prepare_matrixes(self):
@@ -148,8 +148,8 @@ class LinearGlobalAlignment(alignment_matrix):
 
 class AffineGlobalAlignment(alignment_matrix):
     def __init__(self, sequence1, sequence2, score_matrix, gap_cost, gap_open):
-        super().__init__(sequence1, sequence2, score_matrix, gap_cost)
         self.gap_open = gap_open
+        super().__init__(sequence1, sequence2, score_matrix, gap_cost)
 
     def prepare_matrixes(self):
         self.matrixI = self.empty_matrix()
@@ -172,30 +172,23 @@ class AffineGlobalAlignment(alignment_matrix):
         self.print_dp_matrix(self.matrixD)
 
     def fill_matrixes(self):
-        for col in range(1, len(self.sequence1) + 1):  # j
-            for row in range(1, len(self.sequence2) + 1):  # i
-
+        for row in range(1, len(self.sequence2) + 1):
+            for col in range(1, len(self.sequence1) + 1):  # j
+                # i
                 # Matrix I
                 self.matrixI[row][col] = min(
                     # open new
-                    self.gap_open + self.gap_cost + self.matrix[row - 1][col],
+                    self.gap_open + self.gap_cost + self.matrix[row][col - 1],
                     # extend
-                    (
-                        self.gap_cost + self.matrixI[row - 1][col]
-                        if self.matrixI[row - 1][col] is not None
-                        else float("inf")
-                    ),
+                    self.gap_cost + self.matrixI[row][col - 1] if self.matrixI[row][col - 1] else float("inf"),
                 )
+
                 # Matrix D
                 self.matrixD[row][col] = min(
                     # open new
-                    self.gap_open + self.gap_cost + self.matrix[row][col - 1],
+                    self.gap_open + self.gap_cost + self.matrix[row - 1][col],
                     # extend
-                    (
-                        self.gap_cost + self.matrixD[row][col - 1]
-                        if self.matrixD[row][col - 1] is not None
-                        else float("inf")
-                    ),
+                    self.gap_cost + self.matrixD[row - 1][col] if self.matrixD[row - 1][col] else float("inf"),
                 )
                 # Matrix M
                 self.matrix[row][col] = min(
